@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext.Configurations
 {
-    public class MongoDBContextConfiguration<TMongoDBContext> : MongoDBContextConfiguration where TMongoDBContext : MongoDBContext
+    public class MongoDBContextConfiguration<TMongoDBContext> : MongoDBContextConfiguration where TMongoDBContext : MongoDBContextBase
     {
         public override Type ContextType => typeof(TMongoDBContext);
 

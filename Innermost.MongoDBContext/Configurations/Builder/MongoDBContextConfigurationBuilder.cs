@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Innermost.MongoDBContext.Configurations.Builder
 {
     public class MongoDBContextConfigurationBuilder<TMongoDBContext> : MongoDBContextConfigurationBuilder
-        where TMongoDBContext : MongoDBContext
+        where TMongoDBContext : MongoDBContextBase
     {
         public override MongoDBContextConfiguration<TMongoDBContext> Build()
         {

@@ -32,13 +32,13 @@ namespace Innermost.MongoDBContext.Configurations.Builder.Abstractions
             return this;
         }
 
-        public virtual MongoDBContextConfigurationBuilder WithDatabaseSettings(MongoDatabaseSettings mongoDatabaseSettings)
+        public virtual MongoDBContextConfigurationBuilder WithDatabaseSettings(MongoDatabaseSettings? mongoDatabaseSettings)
         {
             _databaseSettings = mongoDatabaseSettings;
             return this;
         }
 
-        public virtual MongoDBContextConfigurationBuilder WithCollectionSettings(MongoCollectionSettings mongoCollectionSettings)
+        public virtual MongoDBContextConfigurationBuilder WithCollectionSettings(MongoCollectionSettings? mongoCollectionSettings)
         {
             _collectionSettings = mongoCollectionSettings;
             return this;

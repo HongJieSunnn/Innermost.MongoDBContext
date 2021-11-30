@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innermost.MongoDBContext", "Innermost.MongoDBContext\Innermost.MongoDBContext.csproj", "{C4AAE4A9-FD3E-4E51-9747-D745F112EBE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Innermost.MongoDBContext", "Innermost.MongoDBContext\Innermost.MongoDBContext.csproj", "{C4AAE4A9-FD3E-4E51-9747-D745F112EBE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection", "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection\Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.csproj", "{6E631D12-2283-4914-9AB2-D5CB41E40AE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection", "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection\Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.csproj", "{6E631D12-2283-4914-9AB2-D5CB41E40AE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

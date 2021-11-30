@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext
 {
-    public class MongoDBContext
+    public class MongoDBContextBase
     {
-        protected MongoDBContext()
+        protected MongoDBContextBase()
         {
             throw new NotSupportedException("Should use MongoDBConfiguration to construct MongoDBContext");
         }
-        public MongoDBContext(MongoDBContextConfiguration configuration)
+        public MongoDBContextBase(MongoDBContextConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (configuration.ContextType == null) throw new ArgumentException("Class which implements MongoDBContextBase must have a constructor with MongoDBContextConfiguration<MongoDBContext> param.");
 
             var client = new MongoClient(configuration.ConnectionString);
             var database = client.GetDatabase(configuration.DatabaseName, configuration.DatabaseSettings);
