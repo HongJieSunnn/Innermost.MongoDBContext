@@ -8,10 +8,6 @@ using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext.Configurations.Builder.Abstractions
 {
-    /// <summary>
-    /// Builder to build MongoDBContextConfiguration.
-    /// Used in AddMongoDBContext extension method.
-    /// </summary>
     public abstract class MongoDBContextConfigurationBuilder
     {
         protected string _connectionString;
@@ -19,7 +15,7 @@ namespace Innermost.MongoDBContext.Configurations.Builder.Abstractions
         protected MongoDatabaseSettings? _databaseSettings;
         protected MongoCollectionSettings? _collectionSettings;
 
-        protected MongoDBContextConfigurationBuilder()
+        public MongoDBContextConfigurationBuilder()
         {
 
         }
@@ -47,11 +43,7 @@ namespace Innermost.MongoDBContext.Configurations.Builder.Abstractions
             _collectionSettings = mongoCollectionSettings;
             return this;
         }
-        /// <summary>
-        /// To build MongoDBContextConfiguration.
-        /// Derived class must override this method to build special MongoDBContextConfiguration.
-        /// </summary>
-        /// <returns></returns>
+
         public abstract MongoDBContextConfiguration Build();
     }
 }

@@ -9,18 +9,9 @@ using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext.Configurations.Builder
 {
-    /// <summary>
-    /// MongoDBContextConfigurationBuilder.
-    /// </summary>
-    /// <typeparam name="TMongoDBContext">Custom MongoDBContext.</typeparam>
     public class MongoDBContextConfigurationBuilder<TMongoDBContext> : MongoDBContextConfigurationBuilder
         where TMongoDBContext : MongoDBContextBase
     {
-        /// <summary>
-        /// To build special configuration by TMongoDBContext.
-        /// </summary>
-        /// <returns>Configuration builed.</returns>
-        /// <exception cref="ArgumentNullException">ConnectionString and DatabaseName properties must have a value.</exception>
         public override MongoDBContextConfiguration<TMongoDBContext> Build()
         {
             if (_connectionString == null)

@@ -8,10 +8,6 @@ using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext
 {
-    /// <summary>
-    /// MongoDBContextBase is the base class to realize MongoDBContext.
-    /// We can use it like using DbContext.
-    /// </summary>
     public class MongoDBContextBase
     {
         protected MongoDBContextBase()
@@ -21,24 +17,20 @@ namespace Innermost.MongoDBContext
         public MongoDBContextBase(MongoDBContextConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-            if (this.GetType() == typeof(MongoDBContextBase)) throw new NotSupportedException("Do not construct a MongoDBContextBase instance.");
-            if (this.GetType() != configuration.ContextType) throw new NotSupportedException($"Type TMongoDBContext(MongoDBContextConfiguration<TMongoDBContext>) must equeal to the MongoDBContext Type which define the Configuration.");
+            if (configuration.ContextType == null) throw new ArgumentException("Class which implements MongoDBContextBase must have a constructor with MongoDBContextConfiguration<MongoDBContext> param.");
 
             var client = new MongoClient(configuration.ConnectionString);
             var database = client.GetDatabase(configuration.DatabaseName, configuration.DatabaseSettings);
 
             //To get all IMongoCollection Properties and set them by IMongoDatabase.GetCollection() Method.
-            var collections = this.GetType().GetProperties().Where(x => x.PropertyType.Name.StartsWith("IMongoCollection")).ToList();
-            if (!collections.Any())
-                throw new NotSupportedException("MongoDBContext you customed must have one IMongoCollection at least.");
-
+            var collections = configuration.ContextType.GetProperties().Where(x => x.PropertyType.Name.StartsWith("IMongoCollection")).ToList();
             foreach (var collection in collections)
             {
-                var collectionType = collection.PropertyType;
+                var collectionType = collection.GetType();
                 var collectionDataType = collectionType.GenericTypeArguments[0];
-                var collectionName = collectionDataType.Name;
+                var collectionName = collectionType.Name;
 
-                collection.SetValue(this, database.GetType()?.GetMethod("GetCollection")?.MakeGenericMethod(collectionDataType).Invoke(database, new object?[] { collectionName, configuration.CollectionSettings }));
+                collection.SetValue(this, database.GetType()?.GetMethod("GetCollection")?.MakeGenericMethod(collectionType).Invoke(collectionName, new object?[] { configuration.CollectionSettings }));
             }
         }
     }

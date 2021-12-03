@@ -12,16 +12,6 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        /// <summary>
-        /// To inject MongoDBContext more easily.
-        /// </summary>
-        /// <typeparam name="TMongoDBContext">Custom MongoDBContext which inherit MongoDBContextBase.</typeparam>
-        /// <param name="services">ServiceCollection</param>
-        /// <param name="configurationAction">To build configuration for MongoDBContext and to inject.</param>
-        /// <param name="contextLifetime">ContextLifeTime defualt is Scoped.</param>
-        /// <param name="configurationLifetime">ConfigurationLifeTime defualt is Scoped.</param>
-        /// <returns>ServiceCollection</returns>
-        /// <exception cref="ArgumentException"></exception>
         public static IServiceCollection AddMongoDBContext<TMongoDBContext>(
             this IServiceCollection services,
             Action<MongoDBContextConfigurationBuilder<TMongoDBContext>> configurationAction, 
@@ -33,22 +23,37 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
             //add configuration to serviceCollection
             services.AddMongoDBContextConfiguration(configurationAction, configurationLifetime);
 
-            if (!HasConstructorWithConfiguration<TMongoDBContext>())
-                throw new ArgumentException("MongoDBContext inherit to MongoDBContextBase must has a constructor with a MongoDBContextConfiguration<TMongoDBContext> param and pass it to MongoDBContextBase.");
-
+            Func<IServiceProvider, TMongoDBContext> implementationFactory = (services) =>
+            {
+                var configuration = services.GetRequiredService<MongoDBContextConfiguration<TMongoDBContext>>();
+                var mongoDBContext = new MongoDBContextBase(configuration);//MongoDBContext class use reflection to initial the collections in implemented class(TMongoDBContext).
+                return (TMongoDBContext)mongoDBContext;
+            };
             //Add MongoDBContext to ServiceCollection.
             switch (contextLifetime)
             {
                 case ServiceLifetime.Singleton:
-                    services.AddSingleton<TMongoDBContext>();
+                    //If TMongoDBContext has not Constructor with MongoDBContextConfiguration<TMongoDBContext> we should create TMongoDBContext by MongoDBContextBase.
+                    //Or we can just inject TMongoDBContext and ASPNETCore will create TMongoDBContext by MongoDBContextConfiguration<TMongoDBContext> we injected in AddMongoDBContextConfiguration.
+                    //TODO.Actually,there can be easiler.We can just remove the injection of MongoDBContextConfiguration<TMongoDBContext> and create TMongoDBContext by MongoDBContextBase.
+                    if (!HasConstructorWithConfiguration<TMongoDBContext>())
+                        services.AddSingleton<TMongoDBContext>(implementationFactory);
+                    else
+                        services.AddSingleton<TMongoDBContext>();
                     break;
 
                 case ServiceLifetime.Scoped:
-                    services.AddScoped<TMongoDBContext>();
+                    if (!HasConstructorWithConfiguration<TMongoDBContext>())
+                        services.AddScoped<TMongoDBContext>(implementationFactory);
+                    else
+                        services.AddScoped<TMongoDBContext>();
                     break;
 
                 case ServiceLifetime.Transient:
-                    services.AddTransient<TMongoDBContext>();
+                    if (!HasConstructorWithConfiguration<TMongoDBContext>())
+                        services.AddTransient<TMongoDBContext>(implementationFactory);
+                    else
+                        services.AddTransient<TMongoDBContext>();
                     break;
                 default:
                     break;
@@ -68,8 +73,7 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
             var mongoDBContextConfigurationBuilder = new MongoDBContextConfigurationBuilder<TMongoDBContext>();
             configurationAction(mongoDBContextConfigurationBuilder);
             var mongoDBContextConfiguration = mongoDBContextConfigurationBuilder.Build();
-            //ServiceProvider will get the same instance of MongoDBContextConfigurationBuilder<TMongoDBContext> whatever ServiceLifetime is defined.
-            //In other words,mongoDBContextConfiguration is singoton.
+
             switch (configurationLifetime)
             {
                 case ServiceLifetime.Singleton:
@@ -79,7 +83,6 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
                     services.AddScoped<MongoDBContextConfiguration<TMongoDBContext>>((s) => mongoDBContextConfiguration);
                     break;
                 case ServiceLifetime.Transient:
-                    //We return mongoDBContextConfiguration so even AddTransient we will get same reference of MongoDBContextConfiguration.
                     services.AddTransient<MongoDBContextConfiguration<TMongoDBContext>>((s) => mongoDBContextConfiguration);
                     break;
                 default:
@@ -88,7 +91,6 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
 
             return services;
         }
-
         /// <summary>
         /// To judge that is there has ConstructorWithConfiguration of TMongoDBContext.
         /// </summary>
@@ -96,11 +98,17 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
         /// <returns></returns>
         private static bool HasConstructorWithConfiguration<TMongoDBContext>() where TMongoDBContext : MongoDBContextBase
         {
-            var hasConstructor = typeof(TMongoDBContext)
-                                .GetConstructors()
-                                .Any((c) => c.GetParameters().Any(p => p.ParameterType == typeof(MongoDBContextConfiguration<TMongoDBContext>)));
+            var constructor = typeof(TMongoDBContext)
+                                .GetMethods()
+                                .Where(m =>
+                                {
+                                    return m.MemberType is System.Reflection.MemberTypes.Constructor && m.GetParameters().Any(p => p.ParameterType is MongoDBContextConfiguration<TMongoDBContext>);
+                                });
 
-            return hasConstructor;
+            if (constructor == null)
+                return false;
+
+            return constructor.Any();
         }
     }
 }
