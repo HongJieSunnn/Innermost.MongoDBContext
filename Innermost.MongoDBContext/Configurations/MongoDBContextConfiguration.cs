@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext.Configurations
 {
+    /// <summary>
+    /// Configuration to confige custom MongoDBContext.
+    /// </summary>
+    /// <typeparam name="TMongoDBContext">Custom MongoDBContext which inherit MongoDBContextBase</typeparam>
     public class MongoDBContextConfiguration<TMongoDBContext> : MongoDBContextConfiguration where TMongoDBContext : MongoDBContextBase
     {
+        /// <summary>
+        /// CustomMongoDBContext type.Which is typeof(TMongoDBContext).
+        /// </summary>
         public override Type ContextType => typeof(TMongoDBContext);
 
         protected MongoDBContextConfiguration()
