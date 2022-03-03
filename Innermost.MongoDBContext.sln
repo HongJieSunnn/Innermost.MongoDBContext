@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Innermost.MongoDBContext.Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Innermost.MongoDBContext.Tests", "Innermost.MongoDBContext.Tests\Innermost.MongoDBContext.Tests.csproj", "{E363B097-ECC0-4040-A53F-2EDBD9DFCF2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Tests", "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Tests\Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Tests.csproj", "{81EA8F58-0660-49DA-859E-CD06E044882C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Tests", "Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Tests\Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Tests.csproj", "{81EA8F58-0660-49DA-859E-CD06E044882C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -14,8 +14,6 @@ namespace Innermost.MongoDBContext
     /// </summary>
     public class MongoDBContextBase
     {
-        public IMongoClient Client { get; private set; }
-        public IMongoDatabase Database { get; private set; }
         protected MongoDBContextBase()
         {
             throw new NotSupportedException("Should use MongoDBConfiguration to construct MongoDBContext");
@@ -26,8 +24,8 @@ namespace Innermost.MongoDBContext
             if (this.GetType() == typeof(MongoDBContextBase)) throw new NotSupportedException("Do not construct a MongoDBContextBase instance.");
             if (this.GetType() != configuration.ContextType) throw new NotSupportedException($"Type TMongoDBContext(MongoDBContextConfiguration<TMongoDBContext>) must equeal to the MongoDBContext Type which define the Configuration.");
 
-            Client = new MongoClient(configuration.ConnectionString);
-            Database = Client.GetDatabase(configuration.DatabaseName, configuration.DatabaseSettings);
+            var client = new MongoClient(configuration.ConnectionString);
+            var database = client.GetDatabase(configuration.DatabaseName, configuration.DatabaseSettings);
 
             //To get all IMongoCollection Properties and set them by IMongoDatabase.GetCollection() Method.
             var collections = this.GetType().GetProperties().Where(x => x.PropertyType.Name.StartsWith("IMongoCollection")).ToList();
@@ -40,7 +38,7 @@ namespace Innermost.MongoDBContext
                 var collectionDataType = collectionType.GenericTypeArguments[0];
                 var collectionName = collectionDataType.Name;
 
-                collection.SetValue(this, Database.GetType()?.GetMethod("GetCollection")?.MakeGenericMethod(collectionDataType).Invoke(Database, new object?[] { collectionName, configuration.CollectionSettings }));
+                collection.SetValue(this, database.GetType()?.GetMethod("GetCollection")?.MakeGenericMethod(collectionDataType).Invoke(database, new object?[] { collectionName, configuration.CollectionSettings }));
             }
         }
     }

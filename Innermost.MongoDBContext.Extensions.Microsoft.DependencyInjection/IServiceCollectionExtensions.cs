@@ -25,7 +25,7 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
         public static IServiceCollection AddMongoDBContext<TMongoDBContext>(
             this IServiceCollection services,
             Action<MongoDBContextConfigurationBuilder<TMongoDBContext>> configurationAction, 
-            ServiceLifetime contextLifetime = ServiceLifetime.Scoped, 
+            ServiceLifetime contextLifetime = ServiceLifetime.Singleton, 
             ServiceLifetime configurationLifetime = ServiceLifetime.Scoped
             )
             where TMongoDBContext : MongoDBContextBase
