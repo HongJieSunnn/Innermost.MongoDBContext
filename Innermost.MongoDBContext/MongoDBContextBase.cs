@@ -30,7 +30,7 @@ namespace Innermost.MongoDBContext
             Database = Client.GetDatabase(configuration.DatabaseName, configuration.DatabaseSettings);
 
             //To get all IMongoCollection Properties and set them by IMongoDatabase.GetCollection() Method.
-            var collections = this.GetType().GetProperties().Where(x => x.PropertyType.Name.StartsWith("IMongoCollection")).ToList();
+            var collections = this.GetType().GetProperties().Where(x => x.PropertyType.FullName!.StartsWith("MongoDB.Driver.IMongoCollection")).ToList();
             if (!collections.Any())
                 throw new NotSupportedException("MongoDBContext you customed must have one IMongoCollection at least.");
 
