@@ -1,12 +1,6 @@
 ﻿using Innermost.MongoDBContext.Configurations;
-using Innermost.MongoDBContext.Configurations.Abstractions;
 using Innermost.MongoDBContext.Configurations.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
 {
@@ -24,8 +18,8 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
         /// <exception cref="ArgumentException"></exception>
         public static IServiceCollection AddMongoDBContext<TMongoDBContext>(
             this IServiceCollection services,
-            Action<MongoDBContextConfigurationBuilder<TMongoDBContext>> configurationAction, 
-            ServiceLifetime contextLifetime = ServiceLifetime.Singleton, 
+            Action<MongoDBContextConfigurationBuilder<TMongoDBContext>> configurationAction,
+            ServiceLifetime contextLifetime = ServiceLifetime.Singleton,
             ServiceLifetime configurationLifetime = ServiceLifetime.Scoped
             )
             where TMongoDBContext : MongoDBContextBase
@@ -36,19 +30,22 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection
             if (!HasConstructorWithConfiguration<TMongoDBContext>())
                 throw new ArgumentException("MongoDBContext inherit to MongoDBContextBase must has a constructor with a MongoDBContextConfiguration<TMongoDBContext> param and pass it to MongoDBContextBase.");
 
-            //Add MongoDBContext to ServiceCollection.
+            //Add MongoDBContext to ServiceCollection.Must be singleton.
             switch (contextLifetime)
             {
                 case ServiceLifetime.Singleton:
+                    services.AddSingleton<MongoDBContextBase, TMongoDBContext>();
                     services.AddSingleton<TMongoDBContext>();
                     break;
 
                 case ServiceLifetime.Scoped:
-                    services.AddScoped<TMongoDBContext>();
+                    services.AddSingleton<MongoDBContextBase, TMongoDBContext>();
+                    services.AddSingleton<TMongoDBContext>();
                     break;
 
                 case ServiceLifetime.Transient:
-                    services.AddTransient<TMongoDBContext>();
+                    services.AddSingleton<MongoDBContextBase, TMongoDBContext>();
+                    services.AddSingleton<TMongoDBContext>();
                     break;
                 default:
                     break;
