@@ -57,7 +57,7 @@ namespace Innermost.MongoDBContext.Extensions.Microsoft.DependencyInjection.Test
             Assert.IsNotNull(scopedConfiguration);
             Assert.IsNotNull(scopedDBContextInstance);
             Assert.AreSame(scopedConfiguration, configuration);
-            Assert.AreNotSame(scopedDBContextInstance, dbContextInstance);
+            Assert.AreSame(scopedDBContextInstance, dbContextInstance);
         }
 
         [TestMethod()]
